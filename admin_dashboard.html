@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}管理员仪表板{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="header">
+        <h1>🔧 管理员控制台</h1>
+        <p>欢迎回来，管理员 {{ current_user.id }}</p>
+    </div>
+    
+    <div class="nav">
+        <a href="/admin">📊 仪表板</a>
+        <a href="/admin/students">👥 学生管理</a>
+        <a href="/admin/submissions">📝 提交记录</a>
+        <a href="/admin/export_excel">📥 导出Excel</a>
+        <a href="/logout" style="color: #dc3545;">🚪 退出</a>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_submissions }}</div>
+            <div class="stat-label">总提交数</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.matched }}</div>
+            <div class="stat-label">匹配成功</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.mismatch }}</div>
+            <div class="stat-label">数值不匹配</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.pending_errors }}</div>
+            <div class="stat-label">待处理错误</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_students }}</div>
+            <div class="stat-label">学生总数</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <h2>⚠️ 待处理的错误报告</h2>
+        {% if pending_errors %}
+            {% for error in pending_errors %}
+            <div style="border-left: 4px solid #dc3545; padding: 15px; margin-bottom: 15px; background: #fff9f9; border-radius: 8px;">
+                <p><strong>学生：</strong> {{ error[2] }} (学号: {{ error[1] }})</p>
+                <p><strong>班级：</strong> {{ error[3] or '未填写' }}</p>
+                <p><strong>用户输入：</strong> {{ error[4] if error[4] else '未填写' }} | 
+                   <strong>OCR识别：</strong> {{ error[5] if error[5] else '识别失败' }}</p>
+                <p><strong>错误详情：</strong> {{ error[-1] }}</p>
+                <p><strong>提交时间：</strong> {{ error[10] }}</p>
+                <form method="post" action="/admin/resolve_error/{{ error[-2] }}" style="margin-top: 10px;">
+                    <input type="number" name="correct_points" placeholder="正确积分" required 
+                           style="padding: 8px; margin-right: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <input type="text" name="resolution" placeholder="处理说明" style="width: 300px; padding: 8px; margin-right: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <button type="submit" class="btn-sm">确认解决</button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-success">✅ 暂无待处理错误，系统运行正常</div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function checkPendingErrors() {
+        fetch('/admin/api/pending_errors')
+            .then(response => response.json())
+            .then(data => {
+                if(data.count > 0) {
+                    const title = document.querySelector('title');
+                    title.textContent = `(${data.count}) 新错误 - 管理员仪表板`;
+                }
+            });
+    }
+    setInterval(checkPendingErrors, 30000);
+</script>
+{% endblock %}
