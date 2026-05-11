@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}学生积分提交{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="header">
+        <h1>📸 学生积分提交系统</h1>
+        <p style="color: #666;">请填写信息并上传包含积分的图片</p>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <strong>📌 使用说明：</strong><br>
+        1. 填写正确的学号和姓名<br>
+        2. 上传包含积分的图片（支持JPG、PNG格式）<br>
+        3. 可选：手动输入积分（系统会自动对比）<br>
+        4. 系统将自动识别图片中的积分数字<br>
+        5. 如果识别结果与输入不一致，将通知管理员审核
+    </div>
+    
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>学号 *</label>
+            <input type="text" name="student_id" required placeholder="请输入学号">
+        </div>
+        
+        <div class="form-group">
+            <label>姓名 *</label>
+            <input type="text" name="student_name" required placeholder="请输入姓名">
+        </div>
+        
+        <div class="form-group">
+            <label>上传积分图片 *</label>
+            <input type="file" name="image" accept="image/*" required>
+            <small style="color: #666; display: block; margin-top: 5px;">
+                建议上传清晰、光线均匀的图片，支持格式：JPG、PNG、GIF、BMP
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label>手动输入积分（可选）</label>
+            <input type="number" name="manual_points" placeholder="可不填，系统自动识别">
+            <small style="color: #666; display: block; margin-top: 5px;">
+                如果填写，系统会对比识别结果是否一致
+            </small>
+        </div>
+        
+        <button type="submit">提交审核</button>
+    </form>
+    
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0; text-align: center;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; border-radius: 8px;">
+            <p style="color: white; margin-bottom: 10px;">
+                <strong>🔐 管理员入口</strong>
+            </p>
+            <a href="/login" style="color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; display: inline-block;">
+                点击进入管理后台 →
+            </a>
+            <p style="color: rgba(255,255,255,0.8); font-size: 12px; margin-top: 10px;">
+                账号: 123456 / 密码: 123456
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
