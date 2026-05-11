@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}提交记录查看{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="header">
+        <h1>📝 所有提交记录</h1>
+        <p>查看所有学生的积分提交历史</p>
+    </div>
+    
+    <div class="nav">
+        <a href="/admin">📊 仪表板</a>
+        <a href="/admin/students">👥 学生管理</a>
+        <a href="/admin/submissions">📝 提交记录</a>
+        <a href="/admin/export_excel">📥 导出Excel</a>
+        <a href="/logout" style="color: #dc3545;">🚪 退出</a>
+    </div>
+    
+    {% if submissions %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>学号</th>
+                    <th>姓名</th>
+                    <th>班级</th>
+                    <th>用户输入</th>
+                    <th>OCR识别</th>
+                    <th>最终积分</th>
+                    <th>状态</th>
+                    <th>提交时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in submissions %}
+                <tr>
+                    <td>{{ sub[0] }}</td>
+                    <td>{{ sub[1] }}</td>
+                    <td>{{ sub[2] }}</td>
+                    <td>{{ sub[3] or '-' }}</td>
+                    <td>{{ sub[4] if sub[4] else '-' }}</td>
+                    <td>{{ sub[5] if sub[5] else '-' }}</td>
+                    <td>
+                        {% if sub[6] %}
+                            <strong>{{ sub[6] }}</strong>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if sub[7] == 'matched' %}
+                            <span class="badge badge-success">✓ 匹配</span>
+                        {% elif sub[7] == 'mismatch' %}
+                            <span class="badge badge-warning">⚠ 不匹配</span>
+                        {% elif sub[7] == 'error' %}
+                            <span class="badge badge-danger">✗ 错误</span>
+                        {% elif sub[7] == 'resolved' %}
+                            <span class="badge badge-success">✓ 已解决</span>
+                        {% else %}
+                            <span class="badge">{{ sub[7] }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ sub[10] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info">暂无提交记录</div>
+    {% endif %}
+</div>
+{% endblock %}
