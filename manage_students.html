@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}学生管理{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="header">
+        <h1>👥 学生信息管理</h1>
+        <p>添加、批量导入或删除学生信息</p>
+    </div>
+    
+    <div class="nav">
+        <a href="/admin">📊 仪表板</a>
+        <a href="/admin/students">👥 学生管理</a>
+        <a href="/admin/submissions">📝 提交记录</a>
+        <a href="/admin/export_excel">📥 导出Excel</a>
+        <a href="/logout" style="color: #dc3545;">🚪 退出</a>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <div>
+            <h3>➕ 单个添加学生</h3>
+            <form method="post">
+                <input type="hidden" name="action" value="add_single">
+                <div class="form-group">
+                    <label>学号</label>
+                    <input type="text" name="student_id" required placeholder="例如: 2024001">
+                </div>
+                <div class="form-group">
+                    <label>姓名</label>
+                    <input type="text" name="name" required placeholder="例如: 张三">
+                </div>
+                <div class="form-group">
+                    <label>班级（可选）</label>
+                    <input type="text" name="class" placeholder="例如: 计算机1班">
+                </div>
+                <button type="submit">添加学生</button>
+            </form>
+        </div>
+        
+        <div>
+            <h3>📤 批量导入学生</h3>
+            <form method="post">
+                <input type="hidden" name="action" value="batch_import">
+                <div class="form-group">
+                    <label>批量数据格式：学号,姓名,班级（每行一个）</label>
+                    <textarea name="batch_data" rows="8" placeholder="2024001,张三,计算机1班&#10;2024002,李四,计算机2班&#10;2024003,王五,计算机1班" required></textarea>
+                </div>
+                <button type="submit">批量导入</button>
+            </form>
+        </div>
+    </div>
+    
+    <div style="margin-top: 40px;">
+        <h3>📋 学生列表</h3>
+        {% if students %}
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>学号</th>
+                        <th>姓名</th>
+                        <th>班级</th>
+                        <th>添加时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student[0] }}</td>
+                        <td>{{ student[1] }}</td>
+                        <td>{{ student[2] or '-' }}</td>
+                        <td>{{ student[3] }}</td>
+                        <td>
+                            <form method="post" style="display: inline;" onsubmit="return confirm('确定要删除该学生吗？')">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="student_id" value="{{ student[0] }}">
+                                <button type="submit" class="btn-danger btn-sm" style="padding: 4px 8px;">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="alert alert-info">暂无学生数据，请先添加学生</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
