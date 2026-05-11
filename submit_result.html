@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}提交结果{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="header">
+        <h1>📋 提交结果</h1>
+    </div>
+    
+    {% if match %}
+        <div class="alert alert-success">
+            ✅ 提交成功！
+        </div>
+        <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 20px;">🎉</div>
+            <h2>学生: {{ student_name }}</h2>
+            {% if ocr_points %}
+                <p style="font-size: 24px; color: #28a745; margin: 20px 0;">
+                    系统识别积分: <strong>{{ ocr_points }}</strong> 分
+                </p>
+            {% endif %}
+            {% if manual_points %}
+                <p>您输入的积分: {{ manual_points }} 分</p>
+                <p style="color: #28a745;">✅ 与识别结果一致</p>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            ⚠️ 需要管理员审核
+        </div>
+        <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 20px;">🔍</div>
+            <h2>学生: {{ student_name }}</h2>
+            {% if ocr_points %}
+                <p style="font-size: 20px; margin: 15px 0;">
+                    系统识别积分: <strong style="color: #ffc107;">{{ ocr_points }}</strong> 分
+                </p>
+            {% endif %}
+            {% if manual_points %}
+                <p style="font-size: 20px; margin: 15px 0;">
+                    您输入的积分: <strong style="color: #dc3545;">{{ manual_points }}</strong> 分
+                </p>
+            {% endif %}
+            {% if error_message %}
+                <div class="alert alert-error" style="margin-top: 20px;">
+                    {{ error_message }}
+                </div>
+            {% endif %}
+            <p style="color: #666; margin-top: 20px;">
+                数值不一致，已通知管理员审核，请耐心等待。
+            </p>
+        </div>
+    {% endif %}
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/submit" class="btn">返回提交页面</a>
+    </div>
+</div>
+{% endblock %}
