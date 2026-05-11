@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}欢迎使用积分管理系统{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 50px auto;">
+    <div class="header">
+        <h1>🎯 学生积分管理系统</h1>
+        <p style="color: #666;">请选择您的身份</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+        <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+            <div style="font-size: 48px; margin-bottom: 20px;">👨‍🎓</div>
+            <h2>学生提交</h2>
+            <p style="margin: 15px 0;">提交积分信息</p>
+            <a href="/submit" style="display: inline-block; background: white; color: #667eea; padding: 10px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">
+                进入提交
+            </a>
+        </div>
+        
+        <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; color: white;">
+            <div style="font-size: 48px; margin-bottom: 20px;">👨‍💼</div>
+            <h2>管理员</h2>
+            <p style="margin: 15px 0;">管理系统数据</p>
+            <a href="/login" style="display: inline-block; background: white; color: #f5576c; padding: 10px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">
+                进入管理
+            </a>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px; padding: 15px; background: #f7f7f7; border-radius: 8px; text-align: center;">
+        <p style="color: #666; margin: 5px 0;">
+            📌 管理员账号: 123456 / 123456
+        </p>
+        <p style="color: #666; margin: 5px 0;">
+            💡 首次使用请先由管理员添加学生信息
+        </p>
+    </div>
+</div>
+{% endblock %}
